@@ -9,4 +9,4 @@ spring:
       server:
         git:
           uri: https://github.com/LumyaZ/config-server-java-exam-final.git
-          default-label: master
+          default-label: main
