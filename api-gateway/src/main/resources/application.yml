@@ -2,8 +2,8 @@ server:
   port: 8090
 
 spring:
-  application:
-    name: api-gateway
+  main:
+    web-application-type: reactive
   cloud:
     gateway:
       routes:
@@ -11,19 +11,28 @@ spring:
           uri: lb://book
           predicates:
             - Path=/books/**
+
         - id: user
           uri: lb://user
           predicates:
             - Path=/users/**
+
         - id: borrowing
           uri: lb://borrowing
           predicates:
             - Path=/borrowings/**
+
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins: "*"
+            allowedMethods: "*"
+
 eureka:
   client:
     service-url:
       defaultZone: http://localhost:8761/eureka/
-    initial-instance-info-replication-interval-seconds: 10
+    instance-info-replication-interval-seconds: 10
     register-with-eureka: true
     fetch-registry: true
   instance:
