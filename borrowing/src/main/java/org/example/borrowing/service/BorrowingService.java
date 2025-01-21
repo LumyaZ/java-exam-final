@@ -15,4 +15,5 @@ public interface BorrowingService {
 
     void deleteById(Long id);
 
+    void deleteByIdKafka(Long id);
 }

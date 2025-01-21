@@ -2,6 +2,7 @@ package org.example.borrowing.serviceImpl;
 
 import org.example.borrowing.dto.BorrowingDTO;
 import org.example.borrowing.entity.Borrowing;
+import org.example.borrowing.kafka.BorrowingKafkaProducer;
 import org.example.borrowing.repository.BorrowingRepository;
 import org.example.borrowing.rest.ServiceClient;
 import org.example.borrowing.service.BorrowingService;
@@ -19,6 +20,9 @@ public class BorrowingServiceImpl implements BorrowingService {
 
     @Autowired
     private ServiceClient serviceClient;
+
+    @Autowired
+    private BorrowingKafkaProducer borrowingKafkaProducer;
 
     @Override
     public List<Borrowing> getAllBorrowings() {
@@ -56,11 +60,19 @@ public class BorrowingServiceImpl implements BorrowingService {
             throw new RuntimeException("Erreur : Livre déjà emprunté.");
         }
 
+
         return borrowingRepository.save(borrowing);
     }
 
     @Override
     public void deleteById(Long id) {
+        borrowingKafkaProducer.sendBorrowingDeleteEvent(id);
+        borrowingRepository.deleteById(id);
+    }
+
+    @Override
+    public void deleteByIdKafka(Long id) {
+        borrowingKafkaProducer.sendBorrowingDeleteEvent(id);
         borrowingRepository.deleteById(id);
     }
 

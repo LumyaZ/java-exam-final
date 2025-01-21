@@ -1,6 +1,7 @@
 package org.example.book.serviceImpl;
 
 import org.example.book.entity.Book;
+import org.example.book.kafka.BookKafkaProducer;
 import org.example.book.repository.BookRepository;
 import org.example.book.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,9 @@ import java.util.List;
 
 @Service
 public class BookServiceImpl implements BookService {
+
+    @Autowired
+    private BookKafkaProducer bookKafkaProducer;
 
     @Autowired
     private BookRepository bookRepository;
@@ -32,6 +36,12 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public void deleteBook(Long id) {
+        bookRepository.deleteById(id);
+    }
+
+    @Override
+    public void deleteBookKafka(Long id) {
+        bookKafkaProducer.sendBookDeleteEvent(id);
         bookRepository.deleteById(id);
     }
 }

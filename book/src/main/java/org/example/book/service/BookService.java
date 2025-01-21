@@ -13,4 +13,6 @@ public interface BookService {
     public Book saveBook(Book Book);
 
     public void deleteBook(Long id);
+
+    void deleteBookKafka(Long id);
 }
